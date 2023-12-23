@@ -1,6 +1,6 @@
+"use client"
 import { completeTodo } from "@/utils/action";
 import { useTransition } from "react";
-"use client"
 
 interface TodoProps {
   todo: {

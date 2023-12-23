@@ -1,4 +1,3 @@
-import { UUID } from "crypto";
 import Todo from "./Todo"
 
 interface Todo {
