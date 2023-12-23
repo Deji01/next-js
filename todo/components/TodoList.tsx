@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import Todo from "./Todo"
 
 interface Todo {
-    id: UUID;
+    id: string;
     createdAt: Date;
     content: string;
     completed: boolean;

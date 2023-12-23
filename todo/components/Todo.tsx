@@ -4,7 +4,7 @@ import { UUID } from "crypto"; // Adjust the import based on your library
 
 interface TodoProps {
   todo: {
-    id: UUID;
+    id: string;
     createdAt: Date;
     content: string;
     completed: boolean;
