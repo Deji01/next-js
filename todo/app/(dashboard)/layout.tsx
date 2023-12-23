@@ -1,7 +1,8 @@
 import NewTodoForm from "@/components/NewTodoForm"
-import { PropsWithChildren } from "react"
 
-const DashboardLayout = ({ children }: PropsWithChildren) => {
+const DashboardLayout = ({ children }: {
+    children: React.ReactNode
+  }) => {
     return (
         <div>
             <div>

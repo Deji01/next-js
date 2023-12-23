@@ -1,6 +1,6 @@
-import { PropsWithChildren } from "react"
-
-const DocsLayout = ({ children }: PropsWithChildren) => {
+const DocsLayout = ({ children }: {
+  children: React.ReactNode
+}) => {
     return (
       <div>
         <div>
