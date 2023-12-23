@@ -1,6 +1,6 @@
 import { completeTodo } from "@/utils/action";
 import { useTransition } from "react";
-import { UUID } from "crypto"; // Adjust the import based on your library
+"use client"
 
 interface TodoProps {
   todo: {
