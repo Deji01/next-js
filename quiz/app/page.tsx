@@ -1,6 +1,7 @@
 import { client } from "@/db";
 import { QueryResultRow } from "@vercel/postgres";
 import Link from "next/link";
+import { Suspense } from "react";
 
 type Quiz = {
   quiz_id: number;
@@ -11,12 +12,13 @@ type Quiz = {
 };
 
 async function Quizzes() {
-  const { rows }: QueryResultRow = await client.sql`SELECT * FROM public.quizzes`;
+  const { rows }: QueryResultRow =
+    await client.sql`SELECT * FROM public.quizzes`;
 
   return (
     <ul>
       {rows.map((row: Quiz) => (
-        <li key={row.quiz_id}>
+        <li key={row.quiz_id} className="underline">
           <Link href={`/quiz/${row.quiz_id}`}>{row.title}</Link>
         </li>
       ))}
@@ -27,8 +29,9 @@ async function Quizzes() {
 export default function Home() {
   return (
     <section>
-      <h1>All Quizzes</h1>
-      <Quizzes />
+      <Suspense fallback={<p>...Loading</p>}>
+        <Quizzes />
+      </Suspense>
     </section>
   );
 }
