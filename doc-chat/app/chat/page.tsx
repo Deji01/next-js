@@ -1,16 +1,24 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { usePipeline } from "@/lib/hooks/use-pipeline";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useChat } from "ai/react";
 
 export default function ChatPage() {
-  // TODO: manage `messages`/`isLoading` using vercel's ai toolkit
-  const messages: any[] = [];
-  const isLoading = false;
+  const supabase = createClientComponentClient();
+  const generateEmbedding = usePipeline(
+    "feature-extraction",
+    "Supabase/gte-small"
+  );
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      api: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/chat`,
+    });
 
-  // TODO: control ready state
-  const isReady = false;
+  const isReady = !!generateEmbedding;
 
   return (
     <div className="max-w-6xl flex flex-col items-center w-full h-full">
@@ -20,8 +28,8 @@ export default function ChatPage() {
             <div
               key={id}
               className={cn(
-                'rounded-xl bg-gray-500 text-white px-4 py-2 max-w-lg',
-                role === 'user' ? 'self-end bg-blue-600' : 'self-start'
+                "rounded-xl bg-gray-500 text-white px-4 py-2 max-w-lg",
+                role === "user" ? "self-end bg-blue-600" : "self-start"
               )}
             >
               {content}
@@ -52,11 +60,44 @@ export default function ChatPage() {
           className="flex items-center space-x-2 gap-2"
           onSubmit={async (e) => {
             e.preventDefault();
-
-            // TODO: generate embedding and send messages to '/chat' edge function
-          }}
+            if (!generateEmbedding) {
+              throw new Error('Unable to generate embeddings');
+            }
+            
+            const output = await generateEmbedding(input, {
+              pooling: 'mean',
+              normalize: true,
+            });
+            
+            const embedding = JSON.stringify(Array.from(output.data));
+            
+            const {
+              data: { session },
+            } = await supabase.auth.getSession();
+            
+            if (!session) {
+              return;
+            }
+            
+            handleSubmit(e, {
+              options: {
+                headers: {
+                  authorization: `Bearer ${session.access_token}`,
+                },
+                body: {
+                  embedding,
+                },
+              },
+            });
+             }}
         >
-          <Input type="text" autoFocus placeholder="Send a message" />
+          <Input
+            type="text"
+            autoFocus
+            placeholder="Send a message"
+            value={input}
+            onChange={handleInputChange}
+          />
           <Button type="submit" disabled={!isReady}>
             Send
           </Button>
