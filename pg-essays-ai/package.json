@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "scrape": "tsx scripts/scrape.ts"
+    "scrape": "tsx scripts/scrape.ts",
+    "embed": "tsx scripts/embed.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.2",
+    "@xenova/transformers": "^2.13.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.306.0",
