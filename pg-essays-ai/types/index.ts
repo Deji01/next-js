@@ -7,7 +7,7 @@ export type PGEssay = {
   chunks: PGChunk[];
 };
 
-export type PGJSON = {
+export type PGChunk = {
   essay_title: string;
   essay_url: string;
   essay_date: string;
@@ -16,7 +16,7 @@ export type PGJSON = {
   embedding: number[];
 };
 
-export type PGChunk = {
+export type PGJSON = {
   tokens: number;
   essays: PGEssay[];
 };
